@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Курси валют</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Курси валют</h1>
+    </header>
+    <main>
+      <section id="exchange-rates">
+        <h2>Інформація про студента</h2>
+        <p>Логін у Moodle: is-21fiot-22-053</p>
+        <p>Поліщук Дарія, 2 курс, ІС-21</p>
+      </section>
+      <section id="student-info">
+        <h2>Курси валют до гривні</h2>
+        <div id="rates-container"></div>
+      </section>
+    </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const studentInfoSection = document.querySelector("#student-info");
+        const ratesContainer = document.querySelector("#rates-container");
+
+        // Fetch exchange rates
+        fetch("/api/exchange-rates")
+          .then((response) => response.json())
+          .then((data) => {
+            showStudentInfo();
+            showExchangeRates(data);
+          })
+          .catch((error) =>
+            console.error("Error fetching exchange rates:", error)
+          );
+
+        function showExchangeRates(data) {
+          const rates = data;
+          for (const rate of rates) {
+            const rateCard = document.createElement("div");
+            rateCard.className = "rate-card";
+
+            const currencyElement = document.createElement("div");
+            currencyElement.className = "currency";
+            currencyElement.textContent = rate.cc;
+
+            const rateElement = document.createElement("div");
+            rateElement.className = "rate";
+            rateElement.textContent = `Курс: ${rate.rate.toFixed(2)} грн`;
+
+            rateCard.appendChild(currencyElement);
+            rateCard.appendChild(rateElement);
+            ratesContainer.appendChild(rateCard);
+          }
+        }
+
+        function showStudentInfo() {
+          studentInfoSection.style.marginBottom = "20px"; // Додатковий відступ для розділу з інформацією про студента
+        }
+      });
+    </script>
+  </body>
+</html>
